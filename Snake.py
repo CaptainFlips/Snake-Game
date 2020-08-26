@@ -231,7 +231,7 @@ class Fruit:
 
         prev_mode = c_mode
 
-    def place(self, window):
+    def place(self, window, call = True):
         if c_mode == 'White':
             self.selected_image = self.black_images[random.randint(0, len(self.white_images) -1)]
         elif c_mode == 'Black':
@@ -242,7 +242,8 @@ class Fruit:
         self.x = int(random.randrange(0, gameWindow.width, 24))
         self.y = int(random.randrange(0, gameWindow.height, 24))
 
-        self.call(window)
+        if call:
+            self.call(window)
 
 
 # Window
@@ -364,11 +365,12 @@ def points_update():
 # Objects
 
 snake_0 = Snake(192, 192, 24, 24, black_snake_images, white_snake_images, coloured_snake_images, python_snake_images, True)
+snake_0.call(gameWindow)
 
 Snake.parts.append(globals()['snake_' + str(points)])      
 
 fruit = Fruit(white_fruit_images, black_fruit_images, coloured_fruit_images)
-fruit.place(gameWindow)
+fruit.place(gameWindow, False)
 
 # Draw
 
