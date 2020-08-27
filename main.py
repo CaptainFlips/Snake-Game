@@ -47,7 +47,6 @@ class Snake():
         self.colour_images = coloured_images
         self.python_images = python_images
 
-        self.len = 1
         self.vel = 24
 
         if not self.is_first:
@@ -84,7 +83,6 @@ class Snake():
             self.selected_image = self.python_images[self.image_pos]            
 
     def call(self, window):
-        self.check_mode()
 
         if self.dir == 'right':
             window.call.blit(self.current_image, (self.x, self.y))
@@ -95,11 +93,9 @@ class Snake():
         elif self.dir == 'up':
             window.call.blit(self.current_image, (self.x, self.y))
 
-
     def update(self):
 
         if not self.is_first:
-            self.prev_dir = self.dir
             self.dir = Snake.parts[self.pos -1].prev_dir
 
         self.check_mode()
@@ -128,7 +124,6 @@ class Snake():
 
         else:
                 
-
             if self.image_pos == 3 and self.dir != Snake.parts[self.pos -1].dir:
                 if Snake.parts[self.pos -1].dir == 'up':
                     self.current_image = pygame.transform.rotate(self.selected_image, 90)
@@ -140,7 +135,6 @@ class Snake():
                     self.current_image = pygame.transform.rotate(self.selected_image, 180)
             else:
                         
-
                 if self.dir == 'right':
                     self.current_image = self.selected_image
 
@@ -156,7 +150,6 @@ class Snake():
                 if self.selected_image == self.colour_images[2]:
                     if random.randint(1,2) == 2:
                         self.current_image = pygame.transform.rotate(self.current_image, 180)
-
 
     def move(self):
 
@@ -189,7 +182,6 @@ class Snake():
         if self.image_pos != 3:
             Snake.x_his.append(self.prev_x)
             Snake.y_his.append(self.prev_y)
-
 
         self.update()
 
@@ -232,6 +224,7 @@ class Fruit:
         prev_mode = c_mode
 
     def place(self, window, call = True):
+
         if c_mode == 'White':
             self.selected_image = self.black_images[random.randint(0, len(self.white_images) -1)]
         elif c_mode == 'Black':
@@ -244,7 +237,6 @@ class Fruit:
 
         if call:
             self.call(window)
-
 
 # Window
 
@@ -329,6 +321,10 @@ fruit_pos_check = False
 chew_sound = pygame.mixer.Sound('Sound/chew.wav')
 go_sound = pygame.mixer.Sound('Sound/game_over.wav')
 
+mute = False
+
+dev_mode = False
+
 # Text Variables
 
 pre_font = pygame.font.Font('freesansbold.ttf', 16)
@@ -345,6 +341,16 @@ ctrls2_font = pygame.font.Font('freesansbold.ttf', 18)
 ctrls2_text = ctrls_font.render(' P - Show  Points              ', True, (180, 180, 180), (50, 50, 50))
 ctrls2_text_rect = ctrls_text.get_rect()
 ctrls2_text_rect.center = (gameWindow.width -50, 28)
+
+ctrls3_font = pygame.font.Font('freesansbold.ttf', 18)
+ctrls3_text = ctrls_font.render(' M - Toggle Mute              ', True, (180, 180, 180), (50, 50, 50))
+ctrls3_text_rect = ctrls_text.get_rect()
+ctrls3_text_rect.center = (gameWindow.width -50, 47)
+
+dev_font = pygame.font.Font('freesansbold.ttf', 25)
+dev_text = dev_font.render('Developer Mode', True, (128, 128, 128), (255, 255, 255))
+dev_text_rect = dev_text.get_rect()
+dev_text_rect.center = (gameWindow.width // 2, gameWindow.height // 2)
 
 # Points
 
@@ -408,6 +414,10 @@ while not ready:
     gameWindow.call.blit(pre_text, pre_text_rect)
     gameWindow.call.blit(ctrls_text, ctrls_text_rect)
     gameWindow.call.blit(ctrls2_text, ctrls2_text_rect)
+    gameWindow.call.blit(ctrls3_text, ctrls3_text_rect)
+
+    if dev_mode:
+        gameWindow.call.blit(dev_text, dev_text_rect)
 
     pygame.display.update()
 
@@ -423,7 +433,23 @@ while not ready:
             if event.key == pygame.K_SPACE:
                 ready = True
 
+            if event.key == pygame.K_RCTRL:
+                dev_mode = True
+
 # ----- Main Loop -----
+
+if dev_mode:
+    for i in range(10):
+            points += 1
+            fruit.place(gameWindow)
+
+            globals()['snake_' + str(points)] = Snake(Snake.parts[-1].x, Snake.parts[-1].y, 24, 24, black_snake_images, white_snake_images, coloured_snake_images, python_snake_images)
+            Snake.parts.append(globals()['snake_' + str(points)])
+
+            for snake in Snake.parts:
+                snake.check_mode()
+            Snake.parts[-2].update()
+            globals()['snake_' + str(points)].update()
 
 while running:
     clock.tick(8)
@@ -465,10 +491,10 @@ while running:
                     c_mode = 'Black'
 
             if event.key == pygame.K_p:
-                if points_toggle == False:
-                    points_toggle = True
-                else:
-                    points_toggle = False
+                points_toggle = not points_toggle
+
+            if event.key == pygame.K_m:
+                mute = not mute
 
             for snake in Snake.parts:
                 snake.check_mode()
@@ -496,9 +522,9 @@ while running:
 
     his_dict = dict(zip(Snake.x_his, Snake.y_his))
 
-    for x_pos, y_pos in his_dict.items():
+    for i in range(len(Snake.x_his)):
 
-        if snake_0.x == x_pos and snake_0.y == y_pos:
+        if snake_0.x == Snake.x_his[i] and snake_0.y == Snake.y_his[i]:
 
             go_font = pygame.font.Font('freesansbold.ttf', 50)
             if c_mode == 'Black':
@@ -514,7 +540,8 @@ while running:
             gameWindow.call.blit(go_text, go_text_rect)
             pygame.display.update()
 
-            go_sound.play()
+            if not mute:
+                go_sound.play()
 
             pygame.time.delay(3000)
 
@@ -522,11 +549,12 @@ while running:
 
     # Fruit Collision
 
-    if snake_0.x //24 == fruit.x //24 and snake_0.y //24 == fruit.y //24:
+    if snake_0.x == fruit.x and snake_0.y == fruit.y:
         points += 1
         fruit.place(gameWindow)
 
-        chew_sound.play()
+        if not mute:
+            chew_sound.play()
         
         fruit_pos_check = False
 
