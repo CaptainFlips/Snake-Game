@@ -523,8 +523,6 @@ while running:
 
     # Snake Collision
 
-    his_dict = dict(zip(Snake.x_his, Snake.y_his))
-
     for i in range(len(Snake.x_his)):
 
         if snake_0.x == Snake.x_his[i] and snake_0.y == Snake.y_his[i]:
@@ -572,8 +570,8 @@ while running:
     # Fruit Placement Control
 
     while not fruit_pos_check:
-        for x_pos, y_pos in his_dict.items():
-            if fruit.x == x_pos and fruit.y == y_pos:
+        for i in range(len(Snake.x_his)):
+            if snake_0.x == Snake.x_his[i] and snake_0.y == Snake.y_his[i]:
                 fruit.place(gameWindow)
             else:
                 fruit_pos_check = True
