@@ -374,7 +374,6 @@ def points_update():
 # Objects
 
 snake_0 = Snake(192, 192, 24, 24, black_snake_images, white_snake_images, coloured_snake_images, python_snake_images, True)
-snake_0.call(gameWindow)
 
 Snake.parts.append(globals()['snake_' + str(points)])      
 
@@ -411,6 +410,10 @@ def redrawWindow():
 
 while not ready:
 
+    gameWindow.call.fill((0,0,0))
+
+    snake_0.call(gameWindow)
+
     gameWindow.call.blit(pre_text, pre_text_rect)
     gameWindow.call.blit(ctrls_text, ctrls_text_rect)
     gameWindow.call.blit(ctrls2_text, ctrls2_text_rect)
@@ -434,7 +437,7 @@ while not ready:
                 ready = True
 
             if event.key == pygame.K_RCTRL:
-                dev_mode = True
+                dev_mode = not dev_mode
 
 # ----- Main Loop -----
 
