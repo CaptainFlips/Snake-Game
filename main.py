@@ -326,6 +326,9 @@ points_toggle = False
 
 fruit_pos_check = False
 
+chew_sound = pygame.mixer.Sound('Sound/chew.wav')
+go_sound = pygame.mixer.Sound('Sound/game_over.wav')
+
 # Text Variables
 
 pre_font = pygame.font.Font('freesansbold.ttf', 16)
@@ -511,15 +514,19 @@ while running:
             gameWindow.call.blit(go_text, go_text_rect)
             pygame.display.update()
 
-            pygame.time.delay(2500)
+            go_sound.play()
+
+            pygame.time.delay(3000)
 
             running = False
 
     # Fruit Collision
 
-    if snake_0.x == fruit.x and snake_0.y == fruit.y:
+    if snake_0.x //24 == fruit.x //24 and snake_0.y //24 == fruit.y //24:
         points += 1
         fruit.place(gameWindow)
+
+        chew_sound.play()
         
         fruit_pos_check = False
 
