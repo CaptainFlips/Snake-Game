@@ -16,7 +16,7 @@ class Window():
 
 class Snake():
     global c_mode
-    global points
+    global fruit_eten
 
     moves = []
     parts = []
@@ -25,7 +25,7 @@ class Snake():
     y_his = []
 
     def __init__(self, x, y, width, height, black_images, white_images, coloured_images, python_images, is_first = False):
-        self.pos = points
+        self.pos = fruit_eten
         self.is_first = is_first
 
         if not self.is_first:
@@ -325,32 +325,83 @@ mute = False
 
 dev_mode = False
 
+diff_mode = 'Normal'
+
+speed = 10
+
+fruit_eten = 0
+
 # Text Variables
+
+text_font = pygame.font.Font('freesansbold.ttf', 18)
 
 pre_font = pygame.font.Font('freesansbold.ttf', 16)
 pre_text = pre_font.render('press SPACE to begin', True, (128, 128, 128), (0, 0, 0))
 pre_text_rect = pre_text.get_rect()
 pre_text_rect.center = (gameWindow.width // 2, gameWindow.height - 64)
 
-ctrls_font = pygame.font.Font('freesansbold.ttf', 18)
-ctrls_text = ctrls_font.render(' C - Colour  Theme              ', True, (180, 180, 180), (50, 50, 50))
+    # controls
+
+ctrls_text = text_font.render(' C - Colour  Theme              ', True, (180, 180, 180), (50, 50, 50))
 ctrls_text_rect = ctrls_text.get_rect()
 ctrls_text_rect.center = (gameWindow.width -50, 9)
 
-ctrls2_font = pygame.font.Font('freesansbold.ttf', 18)
-ctrls2_text = ctrls_font.render(' P - Show  Points              ', True, (180, 180, 180), (50, 50, 50))
+ctrls2_text = text_font.render(' P - Show  Points              ', True, (180, 180, 180), (50, 50, 50))
 ctrls2_text_rect = ctrls_text.get_rect()
 ctrls2_text_rect.center = (gameWindow.width -50, 28)
 
-ctrls3_font = pygame.font.Font('freesansbold.ttf', 18)
-ctrls3_text = ctrls_font.render(' M - Toggle Mute              ', True, (180, 180, 180), (50, 50, 50))
+ctrls3_text = text_font.render(' M - Toggle Mute              ', True, (180, 180, 180), (50, 50, 50))
 ctrls3_text_rect = ctrls_text.get_rect()
 ctrls3_text_rect.center = (gameWindow.width -50, 47)
+
+    # dev mode
 
 dev_font = pygame.font.Font('freesansbold.ttf', 25)
 dev_text = dev_font.render('Developer Mode', True, (128, 128, 128), (255, 255, 255))
 dev_text_rect = dev_text.get_rect()
 dev_text_rect.center = (gameWindow.width // 2, gameWindow.height // 2)
+
+    # difficulty
+
+dif_rect = pygame.Rect(0, 0, 150, 80)
+
+dif0_text = text_font.render('    Game Difficulty ', True, (200, 200, 200), (50, 50, 50))
+dif0_text_rect = dif0_text.get_rect()
+dif0_text_rect.center = (65, 9)
+
+dif1_text = text_font.render(' 1 - Easy ', True, (200, 200, 200), (50, 50, 50))
+dif1_text_rect = dif1_text.get_rect()
+dif1_text_rect.center = (45, 28)
+
+dif2_text = text_font.render(' 2 - Normal ', True, (200, 200, 200), (50, 50, 50))
+dif2_text_rect = dif2_text.get_rect()
+dif2_text_rect.center = (56, 47)
+
+dif3_text = text_font.render(' 3 - Hard ', True, (200, 200, 200), (50, 50, 50))
+dif3_text_rect = dif3_text.get_rect()
+dif3_text_rect.center = (45, 66)
+
+    # selected
+
+dif0s_font = pygame.font.Font('freesansbold.ttf', 18)
+dif0s_text = dif0s_font.render('    Game Difficulty ', True, (200, 200, 200), (150, 150, 50))
+dif0s_text_rect = dif0s_text.get_rect()
+dif0s_text_rect.center = (65, 9)
+
+dif1s_font = pygame.font.Font('freesansbold.ttf', 18)
+dif1s_text = dif1s_font.render(' 1 - Easy ', True, (200, 200, 200), (100, 100, 50))
+dif1s_text_rect = dif1s_text.get_rect()
+dif1s_text_rect.center = (45, 28)
+
+dif2s_font = pygame.font.Font('freesansbold.ttf', 18)
+dif2s_text = dif2s_font.render(' 2 - Normal ', True, (200, 200, 200), (100, 100, 50))
+dif2s_text_rect = dif2s_text.get_rect()
+dif2s_text_rect.center = (56, 47)
+
+dif3s_font = pygame.font.Font('freesansbold.ttf', 18)
+dif3s_text = dif3s_font.render(' 3 - Hard ', True, (200, 200, 200), (100, 100, 50))
+dif3s_text_rect = dif3s_text.get_rect()
+dif3s_text_rect.center = (45, 66)
 
 # Points
 
@@ -370,6 +421,16 @@ def points_update():
 
     text_rect = text.get_rect()
     text_rect.center = (35, 8)
+
+def add_points():
+    global diff_mode
+
+    if diff_mode == 'Easy':
+        return 1
+    elif diff_mode == 'Normal':
+        return 2
+    elif diff_mode == 'Hard':
+        return 3
 
 # Objects
 
@@ -415,12 +476,30 @@ while not ready:
     snake_0.call(gameWindow)
 
     gameWindow.call.blit(pre_text, pre_text_rect)
+
     gameWindow.call.blit(ctrls_text, ctrls_text_rect)
     gameWindow.call.blit(ctrls2_text, ctrls2_text_rect)
     gameWindow.call.blit(ctrls3_text, ctrls3_text_rect)
 
+    pygame.draw.rect(gameWindow.call, (50,50,50), dif_rect)
+    gameWindow.call.blit(dif0_text, dif0_text_rect)
+
+    if diff_mode == 'Easy':
+        gameWindow.call.blit(dif1s_text, dif1s_text_rect)
+        gameWindow.call.blit(dif2_text, dif2_text_rect)
+        gameWindow.call.blit(dif3_text, dif3_text_rect)
+    elif diff_mode == 'Normal':
+        gameWindow.call.blit(dif1_text, dif1_text_rect)
+        gameWindow.call.blit(dif2s_text, dif2s_text_rect)
+        gameWindow.call.blit(dif3_text, dif3_text_rect)
+    else:
+        gameWindow.call.blit(dif1_text, dif1_text_rect)
+        gameWindow.call.blit(dif2_text, dif2_text_rect)
+        gameWindow.call.blit(dif3s_text, dif3s_text_rect)
+
     if dev_mode:
         gameWindow.call.blit(dev_text, dev_text_rect)
+
 
     pygame.display.update()
 
@@ -430,7 +509,7 @@ while not ready:
             running = False
             ready = True
 
-        # Space Detection
+        # Key Detection
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -439,23 +518,34 @@ while not ready:
             if event.key == pygame.K_RCTRL:
                 dev_mode = not dev_mode
 
+            if event.key == pygame.K_1:
+                diff_mode = 'Easy'
+                speed = 4
+            if event.key == pygame.K_2:
+                diff_mode = 'Normal'
+                speed = 10
+            if event.key == pygame.K_3:
+                diff_mode = 'Hard'
+                speed = 16
+
 # ----- Main Loop -----
 
 if dev_mode:
     for i in range(10):
-            points += 1
+            fruit_eten += 1
+            points += add_points()
             fruit.place(gameWindow)
 
-            globals()['snake_' + str(points)] = Snake(Snake.parts[-1].x, Snake.parts[-1].y, 24, 24, black_snake_images, white_snake_images, coloured_snake_images, python_snake_images)
-            Snake.parts.append(globals()['snake_' + str(points)])
+            globals()['snake_' + str(fruit_eten)] = Snake(Snake.parts[-1].x, Snake.parts[-1].y, 24, 24, black_snake_images, white_snake_images, coloured_snake_images, python_snake_images)
+            Snake.parts.append(globals()['snake_' + str(fruit_eten)])
 
             for snake in Snake.parts:
                 snake.check_mode()
             Snake.parts[-2].update()
-            globals()['snake_' + str(points)].update()
+            globals()['snake_' + str(fruit_eten)].update()
 
 while running:
-    clock.tick(8)
+    clock.tick(speed)
 
     # Main Events 
 
@@ -528,17 +618,25 @@ while running:
         if snake_0.x == Snake.x_his[i] and snake_0.y == Snake.y_his[i]:
 
             go_font = pygame.font.Font('freesansbold.ttf', 50)
+            end_points_font = pygame.font.Font('freesansbold.ttf', 16)
             if c_mode == 'Black':
                 go_text = go_font.render('Game Over', True, (128, 128, 128), (255, 255, 255))
+                end_points_text = end_points_font.render('Points: ' + str(points), True, (128, 128, 128), (255, 255, 255))
             elif c_mode == 'White':
                 go_text = go_font.render('Game Over', True, (128, 128, 128), (0, 0, 0))
+                end_points_text = end_points_font.render('Points: ' + str(points), True, (128, 128, 128), (0, 0, 0))
             elif c_mode == 'Colour' or c_mode == 'Python':
                 go_text = go_font.render('Game Over', True, (128, 128, 128), (255, 255, 255))
+                end_points_text = end_points_font.render('Points: ' + str(points), True, (128, 128, 128), (255, 255, 255))
 
             go_text_rect = go_text.get_rect()
             go_text_rect.center = (gameWindow.width // 2, gameWindow.height // 2)
 
+            end_points_text_rect = end_points_text.get_rect()
+            end_points_text_rect.center = (gameWindow.width // 2, gameWindow.height // 2 + 33)
+
             gameWindow.call.blit(go_text, go_text_rect)
+            gameWindow.call.blit(end_points_text, end_points_text_rect)
             pygame.display.update()
 
             if not mute:
@@ -551,7 +649,8 @@ while running:
     # Fruit Collision
 
     if snake_0.x == fruit.x and snake_0.y == fruit.y:
-        points += 1
+        fruit_eten += 1
+        points += add_points()
         fruit.place(gameWindow)
 
         if not mute:
@@ -559,13 +658,13 @@ while running:
         
         fruit_pos_check = False
 
-        globals()['snake_' + str(points)] = Snake(Snake.parts[-1].x, Snake.parts[-1].y, 24, 24, black_snake_images, white_snake_images, coloured_snake_images, python_snake_images)
-        Snake.parts.append(globals()['snake_' + str(points)])
+        globals()['snake_' + str(fruit_eten)] = Snake(Snake.parts[-1].x, Snake.parts[-1].y, 24, 24, black_snake_images, white_snake_images, coloured_snake_images, python_snake_images)
+        Snake.parts.append(globals()['snake_' + str(fruit_eten)])
 
         for snake in Snake.parts:
             snake.check_mode()
         Snake.parts[-2].update()
-        globals()['snake_' + str(points)].update()
+        globals()['snake_' + str(fruit_eten)].update()
 
     # Fruit Placement Control
 
