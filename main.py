@@ -669,11 +669,12 @@ while running:
     # Fruit Placement Control
 
     while not fruit_pos_check:
+        fruit_pos_check = True
         for i in range(len(Snake.x_his)):
             if snake_0.x == Snake.x_his[i] and snake_0.y == Snake.y_his[i]:
                 fruit.place(gameWindow)
-            else:
-                fruit_pos_check = True
+                fruit_pos_check = False
+                
 
     points_update()
     
