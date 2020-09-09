@@ -671,7 +671,7 @@ while running:
     while not fruit_pos_check:
         fruit_pos_check = True
         for i in range(len(Snake.x_his)):
-            if snake_0.x == Snake.x_his[i] and snake_0.y == Snake.y_his[i]:
+            if fruit.x == Snake.x_his[i] and fruit.y == Snake.y_his[i]:
                 fruit.place(gameWindow)
                 fruit_pos_check = False
                 
