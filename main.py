@@ -245,7 +245,7 @@ gameWindow = Window(600, 816, 'Snake')
 # Files
 
 black_snake_images = [
-    pygame.image.load('Images/Snakes/Black - Single.png'),
+    pygame.image.load(r'Images/Snakes/Black - Single.png'),
     pygame.image.load('Images/Snakes/Black - Head.png'), 
     pygame.image.load('Images/Snakes/Black - Body.png'),
     pygame.image.load('Images/Snakes/Black - Tail.png'),
